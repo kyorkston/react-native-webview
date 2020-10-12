@@ -224,6 +224,10 @@ static NSDictionary* customCertificatesForHost;
   if(self.useSharedProcessPool) {
     wkWebViewConfig.processPool = [[RNCWKProcessPoolManager sharedManager] sharedProcessPool];
   }
+  if (@available(iOS 13.0, *), @available is UIDocumentMenuViewController && UIDevice.current.userInterfaceIdiom == .phone) {
+      UIViewController.popO
+    wkWebViewConfig.popO
+  }
   wkWebViewConfig.userContentController = [WKUserContentController new];
 
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000 /* iOS 13 */
@@ -895,6 +899,11 @@ static NSDictionary* customCertificatesForHost;
     return [self topViewControllerWithRootViewController:[(UITabBarController *)viewController selectedViewController]];
   } else if ([viewController isKindOfClass:[UINavigationController class]]){
     return [self topViewControllerWithRootViewController:[(UINavigationController *)viewController visibleViewController]];
+  } else if ([viewController isKindOfClass:[UIDocumentMenuViewController class]]) {
+      if (@available(iOS, 13.0, *)){
+          viewController.modalPresentationStyle = .pageSheet;
+      }
+      return viewController;
   } else {
     return viewController;
   }
